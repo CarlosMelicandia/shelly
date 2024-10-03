@@ -3,18 +3,21 @@ steps:
   args: ['auth', 'configure-docker', 'us-central1-docker.pkg.dev']
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/${PROJECT_ID}/shellhacks-25-repo/opal:prod', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/${PROJECT_ID}/shellhacks-25-repo/opal:${_ENV}', '.']
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/${PROJECT_ID}/shellhacks-25-repo/opal:prod']
+  args: ['push', 'us-central1-docker.pkg.dev/${PROJECT_ID}/shellhacks-25-repo/opal:${_ENV}']
 
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
     'run', 
     'deploy', 
-    'opal-prod', 
-    '--image', 'us-central1-docker.pkg.dev/${PROJECT_ID}/shellhacks-25-repo/opal:prod',
+    'opal-${_ENV}', 
+    '--image', 'us-central1-docker.pkg.dev/${PROJECT_ID}/shellhacks-25-repo/opal:${_ENV}',
     '--region', 'us-central1', 
     '--allow-unauthenticated', 
     '--port', '8080'
   ]
+
+substitutions:
+  _ENV: 'prod'
