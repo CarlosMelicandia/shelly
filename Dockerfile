@@ -11,7 +11,7 @@ WORKDIR /app/webserver
 COPY webserver/go.mod ./
 RUN go mod download
 COPY webserver/*.go ./
-RUN mkdir -p /bin && CGO_ENABLED=0 GOOS=linux go build -o /bin/Opal
+RUN mkdir -p /bin && CGO_ENABLED=0 GOOS=linux go build -o ./bin/Opal
 
 FROM alpine:3.14
 WORKDIR /app

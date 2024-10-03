@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// Serve static files from the "dist" directory
-	fs := http.FileServer(http.Dir("../frontend/build"))
+	fs := http.FileServer(http.Dir("../../frontend/build"))
 	http.Handle("/", fs)
 
 	log.Println("Listening on :8080...")
