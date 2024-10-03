@@ -1,11 +1,11 @@
-FROM node:16-alpine as frontend-builder
+FROM node:16-alpine AS frontend-builder
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ .
 RUN npm run build
 
-FROM golang:1.19-alpine as backend-builder
+FROM golang:1.19-alpine AS backend-builder
 WORKDIR /app/webserver
 COPY webserver/go.mod ./
 RUN go mod download
