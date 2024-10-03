@@ -26,6 +26,3 @@ go.work.sum
 
 # .exe
 */bin/*
-
-#.json
-*.json
