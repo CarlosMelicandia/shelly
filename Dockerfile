@@ -6,15 +6,15 @@ COPY frontend/ .
 RUN npm run build
 
 FROM golang:1.19-alpine as backend-builder
-WORKDIR /app
-COPY webserver/go.mod webserver/go.sum ./
+WORKDIR /app/webserver
+COPY webserver/go.mod ./
 RUN go mod download
 COPY webserver/*.go ./
-RUN CGO_ENABLED=0 GOOS=linux go build -o server
+RUN mkdir -p /bin && CGO_ENABLED=0 GOOS=linux go build -o /bin/Opal
 
 FROM alpine:3.14
 WORKDIR /app
-COPY --from=frontend-builder /app/frontend/dist ./dist
-COPY --from=backend-builder /app/server .
+COPY --from=frontend-builder /app/frontend/build ./frontend/build
+COPY --from=backend-builder /bin/Opal ./webserver/bin/
 EXPOSE 8080
-CMD ["./server"]
+CMD ["./webserver/bin/Opal"]
