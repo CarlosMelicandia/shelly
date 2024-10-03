@@ -21,3 +21,6 @@ steps:
 
 substitutions:
   _ENV: 'prod'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
