@@ -6,10 +6,12 @@ import Header from './header';
 // Code-splitting is automated for `routes` directory
 import Home from '../routes/home';
 import Profile from '../routes/profile';
+
+import Login from '../routes/login';
 import Dashboard from '../routes/dashboard';
+
 import Admin from '../routes/admin';
 import Volunteer from '../routes/volunteer';
-import Login from '../routes/login';
 
 const App = () => (
 	<div id="app">
