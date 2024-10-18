@@ -1,5 +1,6 @@
 ---
 import Counter from '@components/Counter';
+import Login from '@components/Login';
 
 import { signal } from '@preact/signals';
 
@@ -28,6 +29,8 @@ const count = signal(0);
 	</head>
 	<body>
 		<main>
+			<Login client:load />
+
 			<Counter count={count} client:visible>
 				<h1 class="text-red-500 text-3xl">Hello, Preact 1!</h1>
 			</Counter>
