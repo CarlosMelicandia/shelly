@@ -79,7 +79,7 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Send the JWT to the frontend (usually as a cookie or JSON response)
+	// Send the JWT to the client (usually as a cookie or JSON response)
 	http.SetCookie(w, &http.Cookie{
 		Name:    "token",
 		Value:   jwtToken,
