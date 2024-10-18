@@ -86,7 +86,7 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		Expires: time.Now().Add(24 * time.Hour),
 	})
 
-	http.Redirect(w, r, "http://localhost:4321/dashboard", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost:8000/dashboard", http.StatusSeeOther)
 }
 
 // generates a JWT with a 24-hour expiration time
