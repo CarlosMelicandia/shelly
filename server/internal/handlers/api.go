@@ -1,9 +1,6 @@
 package handlers
 
 import (
-	"net/http"
-	"path/filepath"
-
 	"github.com/go-chi/chi"
 	"github.com/weareinit/Opal/internal/auth"
 	"github.com/weareinit/Opal/internal/config"
@@ -24,10 +21,4 @@ func Handler(r *chi.Mux) {
 		router.Use(middleware.JWTMiddleware)
 		router.Get("/", DashboardHandler)
 	})
-}
-
-// todo: move this somewhere else and maybe make the contents an abstraction
-func DashboardHandler(w http.ResponseWriter, r *http.Request) {
-	filePath := filepath.Join(string(config.FilesDir), "/dashboard/index.html")
-	http.ServeFile(w, r, filePath)
 }
