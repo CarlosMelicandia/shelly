@@ -81,12 +81,14 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// Send the JWT to the client (usually as a cookie or JSON response)
 	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   jwtToken,
-		Expires: time.Now().Add(24 * time.Hour),
+		Name:     "token",
+		Value:    jwtToken,
+		Expires:  time.Now().Add(24 * time.Hour),
+		Path:     "/",
+		HttpOnly: true,
 	})
 
-	http.Redirect(w, r, "http://localhost:8000/dashboard", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost:8000/dashboard/", http.StatusSeeOther)
 }
 
 // generates a JWT with a 24-hour expiration time

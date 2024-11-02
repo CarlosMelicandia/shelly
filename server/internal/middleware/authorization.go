@@ -1,46 +1,34 @@
 package middleware
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
-	"github.com/weareinit/Opal/api"
-	"github.com/weareinit/Opal/internal/tools"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/weareinit/Opal/internal/config"
 )
 
-var UnAuthorizedError = errors.New(fmt.Sprintf("Invalid username or token."))
-
-func Authorization(next http.Handler) http.Handler {
+func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		var username string = r.URL.Query().Get("username")
-		var token = r.Header.Get("Authorization")
-		var err error
-
-		if username == "" {
-			api.RequestErrorHandler(w, UnAuthorizedError)
-			return
-		}
-
-		var database *tools.DatabaseInterface
-		database, err = tools.NewDatabase()
+		cookie, err := r.Cookie("token")
 		if err != nil {
-			api.InternalErrorHandler(w)
+			http.Error(w, "Missing token", http.StatusUnauthorized)
 			return
 		}
 
-		var loginDetails *tools.LoginDetails
-		loginDetails = (*database).GetUserLoginDetails(username)
+		tokenString := cookie.Value
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return []byte(config.LoadEnv().JWTSecret), nil
+		})
 
-		if loginDetails == nil || (token != (*loginDetails).AuthToken) {
-			log.Error(UnAuthorizedError)
-			api.RequestErrorHandler(w, UnAuthorizedError)
+		if err != nil || !token.Valid {
+			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 			return
 		}
 
 		next.ServeHTTP(w, r)
-
 	})
 }
