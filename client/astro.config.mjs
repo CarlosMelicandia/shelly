@@ -5,5 +5,13 @@ import tailwind from '@astrojs/tailwind'
 
 // https://astro.build/config
 export default defineConfig({
-	integrations: [preact(), tailwind()],
+	integrations: [preact({ compat: true }), tailwind()],
+	vite: {
+		resolve: {
+			alias: {
+				react: 'preact/compat',
+				'react-dom': 'preact/compat',
+			},
+		},
+	},
 });

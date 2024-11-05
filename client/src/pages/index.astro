@@ -1,13 +1,5 @@
 ---
-import Counter from '@components/Counter';
 import Login from '@components/Login';
-
-import { signal } from '@preact/signals';
-
-// Full Astro Component Syntax:
-// https://docs.astro.build/basics/astro-components/
-
-const count = signal(0);
 ---
 
 <html lang="en">
@@ -30,14 +22,6 @@ const count = signal(0);
 	<body>
 		<main>
 			<Login client:load />
-
-			<Counter count={count} client:visible>
-				<h1 class="text-red-500 text-3xl">Hello, Preact 1!</h1>
-			</Counter>
-
-			<Counter count={count} client:visible>
-				<h1>Hello, Preact 2!</h1>
-			</Counter>
 		</main>
 	</body>
 </html>

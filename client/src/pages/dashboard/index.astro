@@ -1,9 +1,7 @@
 ---
-import { signal } from '@preact/signals';
+import QueryWrapper from "@wrappers/QueryWrapper.jsx"
+import DashboardWrapper from "@components/dashboard/DashboardWrapper.jsx"
 ---
-	<body>
-		<main>
-		this is the dashboard page
-		<br />
-		</main>
-	</body>
+	<QueryWrapper>
+		<DashboardWrapper client:only="react" />
+	</QueryWrapper>

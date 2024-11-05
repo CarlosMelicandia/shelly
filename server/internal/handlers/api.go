@@ -8,6 +8,8 @@ import (
 )
 
 func Handler(r *chi.Mux) {
+	r.Use(middleware.CORSMiddleware)
+
 	r.Route("/", func(router chi.Router) {
 		config.FileServer(router, "/", config.FilesDir)
 	})
@@ -15,6 +17,10 @@ func Handler(r *chi.Mux) {
 	r.Route("/api/auth", func(router chi.Router) {
 		router.Get("/login", oauth.HandleGoogleLogin)
 		router.Get("/callback/google", oauth.HandleGoogleCallback)
+	})
+
+	r.Route("/api/user", func(router chi.Router) {
+		router.Get("/", UserHandler)
 	})
 
 	r.Route("/dashboard/", func(router chi.Router) {
