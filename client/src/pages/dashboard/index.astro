@@ -1,7 +1,4 @@
 ---
-import QueryWrapper from "@wrappers/QueryWrapper.jsx"
-import DashboardWrapper from "@components/dashboard/DashboardWrapper.jsx"
+import Dashboard from "@components/dashboard/Dashboard.jsx"
 ---
-	<QueryWrapper>
-		<DashboardWrapper client:only="react" />
-	</QueryWrapper>
+<Dashboard client:load />
