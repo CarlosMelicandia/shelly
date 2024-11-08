@@ -24,7 +24,7 @@ type GoogleUserInfo struct {
 	VerifiedEmail bool   `json:"verified_email"`
 	GivenName     string `json:"given_name"`
 	// FamilyName is the only field that can be optional
-	FamilyName    *string `json:"family_name"`
+	FamilyName    *string `json:"family_name,omitempty"`
 	ProfilePicURL string  `json:"picture"`
 }
 
