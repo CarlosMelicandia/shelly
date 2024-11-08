@@ -14,6 +14,12 @@ export default function Dashboard() {
 					{user
 						? user.token
 						: "you dont have a token"}
+					<br />
+					<br />
+					And this is your user id: {" "}
+					{user
+						? user.userId
+						: "you dont have a user id"}
 				</h1>
 			)}
 		</div>
