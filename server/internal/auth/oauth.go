@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -98,6 +99,18 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
+	censoredEmail := maskEmail(userInfo.Email)
+
+	// Mask email so user can know which account they used to log in originally
+	http.SetCookie(w, &http.Cookie{
+		Name:    "mask_email",
+		Value:   censoredEmail,
+		Expires: time.Now().AddDate(0, 6, 0),
+		Path:    "/",
+		// keep HttpOnly field for preventing XSS attacks
+		HttpOnly: true,
+	})
+
 	http.Redirect(w, r, "http://localhost:8000/dashboard/", http.StatusSeeOther)
 }
 
@@ -139,4 +152,22 @@ func generateJWT(userId string) (string, error) {
 
 	secret := []byte(envConfig.JWTSecret)
 	return token.SignedString(secret)
+}
+
+func maskEmail(email string) string {
+	parts := strings.Split(email, "@")
+	if len(parts) != 2 {
+		return email
+	}
+	localPart := parts[0]
+	domainPart := parts[1]
+
+	// Mask the local part except for the first two and last two characters
+	if len(localPart) > 4 {
+		masked := fmt.Sprintf("%s*****%s", localPart[:2], localPart[len(localPart)-2:])
+		return fmt.Sprintf("%s@%s", masked, domainPart)
+	}
+
+	// If the local part is too short to mask, return it as is
+	return email
 }
