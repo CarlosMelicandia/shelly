@@ -1,21 +1,22 @@
-// todo. fix this code since its gpt generated with running it
-import { hacker_applications, events_tracker, user, application_status_enums } from './your-schema-file'; // Adjust the import to your schema file location
-import { db } from './db'; // Assume you have a db instance already set up
+import { hacker_applications, events_tracker, user, application_status_enums } from './schema';
+import { db } from './index';
 
 async function seedDatabase() {
+
+  // reseed db
+  await db.delete(user)
+  await db.delete(hacker_applications)
+  await db.delete(events_tracker)
+
   try {
-    // Insert a user
     await db.insert(user).values({
       id: 'user-123',
       name: 'John Doe',
       email: 'johndoe@example.com',
-      emailVerified: new Date().toISOString(),
-      image: 'https://example.com/johndoe.jpg',
       discordUsername: 'johnnyD',
       admin: false,
     });
 
-    // Insert a hacker application
     await db.insert(hacker_applications).values({
       userId: 'user-123',
       first_name: 'John',
@@ -39,14 +40,13 @@ async function seedDatabase() {
       agreed_mlh_news: true,
       application_status: application_status_enums[0], // 'registered'
       check_in_status: false,
-      created_at: new Date().toISOString(),
+      created_at: new Date()
     });
 
-    // Insert an event tracker
     await db.insert(events_tracker).values({
       event_id: 'event-001',
       user_id: 'user-123',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date()
     });
 
     console.log('Database seeded successfully.');
@@ -56,4 +56,3 @@ async function seedDatabase() {
 }
 
 seedDatabase();
-
