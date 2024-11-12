@@ -9,7 +9,7 @@ import (
 )
 
 func GetToken(r *http.Request) (*jwt.Token, error) {
-	cookie, err := r.Cookie("token")
+	cookie, err := r.Cookie("access_token")
 	if err != nil {
 		return nil, fmt.Errorf("missing token: %w", err)
 	}
@@ -32,7 +32,7 @@ func GetToken(r *http.Request) (*jwt.Token, error) {
 }
 
 func GetTokenString(r *http.Request) (string, error) {
-	cookie, err := r.Cookie("token")
+	cookie, err := r.Cookie("access_token")
 	if err != nil {
 		return "", fmt.Errorf("missing token: %w", err)
 	}
