@@ -4,9 +4,11 @@ import { db } from './index';
 async function seedDatabase() {
 
   // reseed db
-  await db.delete(user)
-  await db.delete(hacker_applications)
-  await db.delete(events_tracker)
+  await Promise.all([
+    db.delete(user),
+    db.delete(hacker_applications),
+    db.delete(events_tracker)
+  ]);
 
   try {
     await db.insert(user).values({
