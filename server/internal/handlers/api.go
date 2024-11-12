@@ -20,6 +20,7 @@ func Handler(r *chi.Mux) {
 	})
 
 	r.Route("/api/user", func(router chi.Router) {
+		router.Use(middleware.JWTMiddleware)
 		router.Get("/", UserHandler)
 	})
 

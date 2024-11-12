@@ -6,10 +6,10 @@ export default function Dashboard() {
 	if (isError) return <p>Error loading user session</p>;
 
 	return (
-		<div>
-			<p class="text-red-500">this is the dashboard page!</p>
+		<div class="text-3xl">
+			<p class="text-red-500 text-3xl">this is the dashboard page!</p>
 			{isLoading ? <p>loading...</p> : (
-				<h1>
+				<h3>
 					Welcome, this is your token:{" "}
 					{user
 						? user.token
@@ -20,7 +20,7 @@ export default function Dashboard() {
 					{user
 						? user.userId
 						: "you dont have a user id"}
-				</h1>
+				</h3>
 			)}
 		</div>
 	);
