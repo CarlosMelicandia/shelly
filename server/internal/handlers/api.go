@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/weareinit/Opal/internal/auth"
 	"github.com/weareinit/Opal/internal/config"
-	"github.com/weareinit/Opal/internal/middleware"
+	"github.com/weareinit/Opal/middleware"
 )
 
 func Handler(r *chi.Mux) {
