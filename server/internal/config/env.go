@@ -11,6 +11,9 @@ type AppConfig struct {
 	GoogleClientSecret string
 	JWTSecret          string
 	JWTSecretRefresh   string
+	TursoConnectionURL string
+	TursoDatabaseName  string
+	TursoAuthToken     string
 }
 
 func LoadEnv() AppConfig {
@@ -24,10 +27,19 @@ func LoadEnv() AppConfig {
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		JWTSecret:          os.Getenv("JWT_SECRET"),
 		JWTSecretRefresh:   os.Getenv("JWT_SECRET_REFRESH"),
+		TursoConnectionURL: os.Getenv("TURSO_CONNECTION_URL"),
+		TursoDatabaseName: os.Getenv("TURSO_DATABASE_NAME"),
+    TursoAuthToken:     os.Getenv("TURSO_AUTH_TOKEN"),
 	}
 
-	if config.GoogleClientID == "" || config.GoogleClientSecret == "" || config.JWTSecret == "" || config.JWTSecretRefresh == "" {
-		log.Fatal("Missing required environment variables")
+	if config.GoogleClientID == "" || 
+     config.GoogleClientSecret == "" || 
+     config.JWTSecret == "" || 
+     config.JWTSecretRefresh == "" || 
+     config.TursoConnectionURL == "" ||
+     config.TursoDatabaseName == "" ||
+     config.TursoAuthToken == "" {
+      log.Fatal("Missing required environment variables")
 	}
 
 	return config
