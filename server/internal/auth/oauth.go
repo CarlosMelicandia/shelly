@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/weareinit/Opal/api"
+	"github.com/weareinit/Opal/cmd/operations"
 	"github.com/weareinit/Opal/internal/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -103,6 +105,16 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// Mask email so user can know which account they used to log in originally
 	SetCookie(w, "mask_email", censoredEmail, time.Now().AddDate(0, 6, 0))
+
+  user := api.User {
+    UserID: userInfo.ID,
+    Name: userInfo.GivenName,
+    Email: userInfo.Email,
+  }
+
+  if err := operations.AddUser(user); err != nil {
+    fmt.Println("Error creating user:", err)
+  }
 
 	http.Redirect(w, r, "http://localhost:8000/dashboard/", http.StatusSeeOther)
 }
