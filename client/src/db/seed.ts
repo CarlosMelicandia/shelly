@@ -12,11 +12,10 @@ async function seedDatabase() {
 
   try {
     await db.insert(user).values({
-      id: 'user-123',
+      userId: '123',
       name: 'John Doe',
       email: 'johndoe@example.com',
       discordUsername: 'johnnyD',
-      admin: false,
     });
 
     await db.insert(hackerApplications).values({

@@ -40,11 +40,15 @@ export const eventsTracker = sqliteTable('events_tracker', {
   }));
 
 export const user = sqliteTable('user', {
-  id: text('id').primaryKey(),
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: text('user_id').notNull(),
   name: text('name').notNull(),
   email: text('email').unique().notNull(),
   discordUsername: text('discord_username'),
-  admin: integer({ mode: 'boolean' }).default(false),
+  isAdmin: integer({ mode: 'boolean' }).default(false),
+  isVolunteer: integer({ mode: 'boolean' }).default(false),
+  isSponsor: integer({ mode: 'boolean' }).default(false),
+  isMentor: integer({ mode: 'boolean' }).default(false),
   hackerId: integer('hacker_id'),
 });
 
