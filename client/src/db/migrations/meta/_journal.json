@@ -8,6 +8,34 @@
       "when": 1731678164067,
       "tag": "0000_fearless_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1731799129787,
+      "tag": "0001_dark_harpoon",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1731799550055,
+      "tag": "0002_military_rumiko_fujikawa",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1731799748430,
+      "tag": "0003_perfect_santa_claus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1731800321097,
+      "tag": "0004_steep_ghost_rider",
+      "breakpoints": true
     }
   ]
 }

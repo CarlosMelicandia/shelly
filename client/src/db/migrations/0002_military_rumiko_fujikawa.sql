@@ -1,0 +1,1 @@
+ALTER TABLE `user` ADD `family_name` text;
