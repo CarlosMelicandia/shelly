@@ -8,22 +8,12 @@ import (
 )
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
-	token, err := helpers.GetTokenString(r)
-	if err != nil {
-		http.Error(w, "Could not retrieve token", http.StatusUnauthorized)
-		return
-	}
+  user, err := helpers.GetUser(r)
 
-	userId, err := helpers.GetUserId(r)
-	if err != nil {
-		http.Error(w, "Could not retrieve userId", http.StatusUnauthorized)
-		return
-	}
+  if err != nil {
+    http.Error(w, "Could not fetch the users information", http.StatusNotFound)
+  }
 
-	// todo: remove this and only send the user's info for the client
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token":  token,
-		"userId": userId,
-	})
+	json.NewEncoder(w).Encode(user)
 }
