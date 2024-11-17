@@ -22,7 +22,7 @@ import (
 var googleOauthConfig *oauth2.Config
 
 type GoogleUserInfo struct {
-	ID            string `json:"id"`
+	Id            string `json:"id"`
 	Email         string `json:"email"`
 	VerifiedEmail bool   `json:"verified_email"`
 	GivenName     string `json:"given_name"`
@@ -84,19 +84,30 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	userInfo, err := getUserInfo(client)
 
 	// Generate JWT after successful authentication
-	jwtToken, err := GenerateJWT(userInfo.ID)
+	jwtToken, err := GenerateJWT(userInfo.Id)
 	if err != nil {
 		log.Println("Error generating JWT:", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
-	refreshToken, err := GenerateRefreshToken(userInfo.ID)
+	refreshToken, err := GenerateRefreshToken(userInfo.Id)
 	if err != nil {
 		log.Println("Error generating secret:", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+  user := api.User {
+    UserId: userInfo.Id,
+    Name: userInfo.GivenName,
+    Email: userInfo.Email,
+  }
+
+  if _, err := operations.AddUser(user); err != nil {
+    fmt.Println("Error creating user:", err)
+    return
+  }
 
 	SetCookie(w, "access_token", jwtToken, time.Now().Add(15*time.Minute))
 	SetCookie(w, "refresh_token", refreshToken, time.Now().AddDate(0, 3, 0))
@@ -105,16 +116,6 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// Mask email so user can know which account they used to log in originally
 	SetCookie(w, "mask_email", censoredEmail, time.Now().AddDate(0, 6, 0))
-
-  user := api.User {
-    UserID: userInfo.ID,
-    Name: userInfo.GivenName,
-    Email: userInfo.Email,
-  }
-
-  if err := operations.AddUser(user); err != nil {
-    fmt.Println("Error creating user:", err)
-  }
 
 	http.Redirect(w, r, "http://localhost:8000/dashboard/", http.StatusSeeOther)
 }

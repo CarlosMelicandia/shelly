@@ -1,11 +1,15 @@
 package api
 
 type User struct {
-  ID string
-  UserID string
+  Id string
+  UserId string
   Name string
+  FamilyName *string
   Email string
   DiscordUsername *string
-  Admin *bool
-  HackerID *int
+  HackerId *int
+  IsAdmin bool
+  IsVolunteer bool
+  IsMentor bool
+  IsSponsor bool
 }
