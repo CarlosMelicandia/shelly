@@ -28,4 +28,9 @@ func Handler(r *chi.Mux) {
 		router.Use(middleware.JWTMiddleware)
 		router.Get("/", DashboardHandler)
 	})
+
+	r.Route("/admin/", func(router chi.Router) {
+		router.Use(middleware.AdminMiddleware)
+		router.Get("/", AdminHandler)
+	})
 }

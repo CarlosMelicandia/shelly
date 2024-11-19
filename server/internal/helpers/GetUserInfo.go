@@ -92,3 +92,16 @@ func GetUser(r *http.Request) (api.User, error) {
     })
 }
 
+func IsUserAdmin(userId string, r *http.Request) bool {
+  getUser, err := GetUser(r)
+
+  if err != nil {
+    return false
+  }
+
+  if getUser.IsAdmin {
+    return true
+  } else {
+    return false
+  }
+}

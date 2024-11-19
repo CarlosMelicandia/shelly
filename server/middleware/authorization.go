@@ -29,6 +29,23 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func AdminMiddleware(next http.Handler) http.Handler {
+  return JWTMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    userId, err := helpers.GetUserId(r)
+    if err != nil {
+        http.Error(w, "Unauthorized: "+err.Error(), http.StatusNotFound)
+        return
+    }
+
+    isAdmin := helpers.IsUserAdmin(userId, r)
+    if isAdmin {
+      next.ServeHTTP(w, r)
+    } else {
+        http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+    }
+  }))
+}
 
 func CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
