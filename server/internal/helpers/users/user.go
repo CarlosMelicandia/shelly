@@ -7,43 +7,13 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/weareinit/Opal/api"
-	"github.com/weareinit/Opal/internal/config"
+	"github.com/weareinit/Opal/internal/helpers/tokens"
 	"github.com/weareinit/Opal/internal/tools"
 )
 
-func GetToken(r *http.Request) (*jwt.Token, error) {
-	cookie, err := r.Cookie("access_token")
-	if err != nil {
-		return nil, fmt.Errorf("missing token: %w", err)
-	}
 
-	tokenString := cookie.Value
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		secret := []byte(config.LoadEnv().JWTSecret)
-		return secret, nil
-	})
-
-	if err != nil || !token.Valid {
-		return nil, fmt.Errorf("invalid token: %w", err)
-	}
-
-	return token, nil
-}
-
-func GetTokenString(r *http.Request) (string, error) {
-	cookie, err := r.Cookie("access_token")
-	if err != nil {
-		return "", fmt.Errorf("missing token: %w", err)
-	}
-	return cookie.Value, nil
-}
-
-func GetUserId(r *http.Request) (string, error) {
-	token, err := GetToken(r)
+func GetUserId(w http.ResponseWriter, r *http.Request) (string, error) {
+	token, err := tokens.GetAccessToken(w, r)
 	if err != nil {
 		return "", fmt.Errorf("could not get the token to retrieve userId: %w", err)
 	}
@@ -57,8 +27,8 @@ func GetUserId(r *http.Request) (string, error) {
 	return "", fmt.Errorf("could not get the UserId")
 }
 
-func GetUser(r *http.Request) (api.User, error) {
-    userId, err := GetUserId(r)
+func GetUser(w http.ResponseWriter, r *http.Request) (api.User, error) {
+    userId, err := GetUserId(w, r)
     if err != nil {
         return api.User{}, fmt.Errorf("could not get the token from user")
     }
@@ -92,8 +62,8 @@ func GetUser(r *http.Request) (api.User, error) {
     })
 }
 
-func IsUserAdmin(userId string, r *http.Request) bool {
-  getUser, err := GetUser(r)
+func IsUserAdmin(userId string, w http.ResponseWriter, r *http.Request) bool {
+  getUser, err := GetUser(w, r)
 
   if err != nil {
     return false

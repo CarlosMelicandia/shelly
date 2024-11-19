@@ -8,7 +8,7 @@ import (
 )
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
-  user, err := users.GetUser(r)
+  user, err := users.GetUser(w, r)
 
   if err != nil {
     http.Error(w, "Could not fetch the users information", http.StatusNotFound)

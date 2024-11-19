@@ -10,37 +10,103 @@ import (
 	"github.com/weareinit/Opal/internal/config"
 )
 
+type TokenType string
 
-func ValidateAccessToken(r *http.Request) (string, error) {
-	cookie, err := r.Cookie("access_token")
+const (
+	AccessToken  TokenType = "access"
+	RefreshToken TokenType = "refresh"
+)
+
+func GetAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
+	token, err := ValidateAccessToken(w, r)
 	if err != nil {
-		return "", fmt.Errorf("missing access token")
+		newAccessToken, err := refreshTokensAndParseAccessToken(w, r)
+		if err != nil {
+			return nil, fmt.Errorf("could not refresh the access token: %w", err)
+		}
+		return newAccessToken, nil
+	}
+	return token, nil
+}
+
+func parseToken(tokenString string, tokenType TokenType) (*jwt.Token, error) {
+	var secret []byte
+
+	// Determine the secret based on the token type
+	switch tokenType {
+	case AccessToken:
+		secret = []byte(config.LoadEnv().JWTSecret)
+	case RefreshToken:
+		secret = []byte(config.LoadEnv().JWTSecretRefresh)
+	default:
+		return nil, fmt.Errorf("invalid token type")
 	}
 
-	tokenString := cookie.Value
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(config.LoadEnv().JWTSecret), nil
+		return secret, nil
 	})
 
-	if err != nil || !token.Valid {
-		return "", fmt.Errorf("invalid or expired token")
+	if err != nil {
+		return nil, fmt.Errorf("token parsing error: %w", err)
 	}
 
+	// Check for expiration
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if exp, ok := claims["exp"].(float64); ok {
 			expirationTime := time.Unix(int64(exp), 0)
 			if time.Now().After(expirationTime) {
-				return "", fmt.Errorf("token has expired")
+				return nil, fmt.Errorf("token is expired")
 			}
 		} else {
-			return "", fmt.Errorf("token is missing expiration claim")
+			return nil, fmt.Errorf("token does not contain a valid 'exp' claim")
 		}
 	}
 
-	return tokenString, nil
+	return token, nil
+}
+
+func refreshTokensAndParseAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
+	newAccessToken, err := RefreshTokens(w, r)
+	if err != nil {
+		return nil, fmt.Errorf("refresh failed: %w", err)
+	}
+
+	token, err := parseToken(newAccessToken, AccessToken)
+	if err != nil || !token.Valid {
+		return nil, fmt.Errorf("invalid access token after refresh: %w", err)
+	}
+
+	return token, nil
+}
+
+func GetAccessTokenString(w http.ResponseWriter, r *http.Request) (string, error) {
+	cookie, err := r.Cookie("access_token")
+	if err != nil {
+		newToken, refreshErr := RefreshTokens(w, r)
+		if refreshErr != nil {
+			return "", fmt.Errorf("missing token and refresh failed: %w", refreshErr)
+		}
+		return newToken, nil
+	}
+
+	return cookie.Value, nil
+}
+
+func ValidateAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
+	tokenString, err := GetAccessTokenString(w, r)
+	if err != nil {
+		return nil, fmt.Errorf("could not fetch token: %w", err)
+	}
+
+	token, err := parseToken(tokenString, AccessToken)
+	if err != nil || !token.Valid {
+		return nil, fmt.Errorf("invalid or expired token: %w", err)
+	}
+
+	return token, nil
 }
 
 func RefreshTokens(w http.ResponseWriter, r *http.Request) (string, error) {
@@ -50,27 +116,12 @@ func RefreshTokens(w http.ResponseWriter, r *http.Request) (string, error) {
 	}
 
 	refreshTokenString := refreshCookie.Value
-	refreshToken, err := jwt.Parse(refreshTokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(config.LoadEnv().JWTSecretRefresh), nil
-	})
-
+	refreshToken, err := parseToken(refreshTokenString, RefreshToken)
 	if err != nil || !refreshToken.Valid {
-		return "", fmt.Errorf("invalid or expired refresh token, please log in again")
+		return "", fmt.Errorf("invalid or expired refresh token, please log in again: %w", err)
 	}
 
 	if claims, ok := refreshToken.Claims.(jwt.MapClaims); ok && refreshToken.Valid {
-		if exp, ok := claims["exp"].(float64); ok {
-			expirationTime := time.Unix(int64(exp), 0)
-			if time.Now().After(expirationTime) {
-				return "", fmt.Errorf("refresh token has expired, please log in again")
-			}
-		} else {
-			return "", fmt.Errorf("refresh token is missing expiration claim")
-		}
-
 		userId, ok := claims["userId"].(string)
 		if !ok {
 			return "", fmt.Errorf("invalid refresh token claims")
@@ -78,12 +129,12 @@ func RefreshTokens(w http.ResponseWriter, r *http.Request) (string, error) {
 
 		newAccessToken, err := oauth.GenerateJWT(userId)
 		if err != nil {
-			return "", fmt.Errorf("failed to generate new access token")
+			return "", fmt.Errorf("failed to generate new access token: %w", err)
 		}
 
 		newRefreshToken, err := oauth.GenerateRefreshToken(userId)
 		if err != nil {
-			return "", fmt.Errorf("failed to generate new refresh token")
+			return "", fmt.Errorf("failed to generate new refresh token: %w", err)
 		}
 
 		oauth.SetCookie(w, "access_token", newAccessToken, time.Now().Add(15*time.Minute))
