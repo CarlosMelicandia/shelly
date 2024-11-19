@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/weareinit/Opal/internal/helpers"
+	"github.com/weareinit/Opal/internal/helpers/users"
 )
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
-  user, err := helpers.GetUser(r)
+  user, err := users.GetUser(r)
 
   if err != nil {
     http.Error(w, "Could not fetch the users information", http.StatusNotFound)

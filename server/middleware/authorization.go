@@ -4,16 +4,17 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/weareinit/Opal/internal/helpers"
+	"github.com/weareinit/Opal/internal/helpers/tokens"
+	"github.com/weareinit/Opal/internal/helpers/users"
 )
 
 // check if they are currently logged in
 func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		accessToken, err := helpers.ValidateAccessToken(r)
+		accessToken, err := tokens.ValidateAccessToken(r)
 		if err != nil {
 			// Attempt to refresh the access token using the refresh token
-			newAccessToken, err := helpers.RefreshTokens(w, r)
+			newAccessToken, err := tokens.RefreshTokens(w, r)
 			if err != nil {
 				http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
 				return
@@ -31,13 +32,13 @@ func JWTMiddleware(next http.Handler) http.Handler {
 
 func AdminMiddleware(next http.Handler) http.Handler {
   return JWTMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    userId, err := helpers.GetUserId(r)
+    userId, err := users.GetUserId(r)
     if err != nil {
         http.Error(w, "Unauthorized: "+err.Error(), http.StatusNotFound)
         return
     }
 
-    isAdmin := helpers.IsUserAdmin(userId, r)
+    isAdmin := users.IsUserAdmin(userId, r)
     if isAdmin {
       next.ServeHTTP(w, r)
     } else {
