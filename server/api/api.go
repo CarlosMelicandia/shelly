@@ -6,7 +6,7 @@ type User struct {
   Name string
   FamilyName *string
   Email string
-  DiscordUsername *string
+  DiscordId *string
   HackerId *int
   IsAdmin bool
   IsVolunteer bool
