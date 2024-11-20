@@ -13,7 +13,6 @@ func JWTMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessToken, err := tokens.ValidateAccessToken(w, r)
 		if err != nil {
-			// Attempt to refresh the access token using the refresh token
 			newAccessToken, err := tokens.RefreshTokens(w, r)
 			if err != nil {
 				http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
@@ -31,21 +30,20 @@ func JWTMiddleware(next http.Handler) http.Handler {
 }
 
 func AdminMiddleware(next http.Handler) http.Handler {
-  return JWTMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    userId, err := users.GetUserId(w, r)
-    if err != nil {
-        http.Error(w, "Unauthorized: "+err.Error(), http.StatusNotFound)
-        return
-    }
+	return JWTMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		userId, err := users.GetUserId(w, r)
+		if err != nil {
+			return
+		}
 
-    isAdmin := users.IsUserAdmin(userId, w, r)
-    if isAdmin {
-      next.ServeHTTP(w, r)
-    } else {
-        http.Error(w, "Unauthorized", http.StatusUnauthorized)
-        return
-    }
-  }))
+		isAdmin := users.IsUserAdmin(userId, w, r)
+		if !isAdmin {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	}))
 }
 
 func CORSMiddleware(next http.Handler) http.Handler {

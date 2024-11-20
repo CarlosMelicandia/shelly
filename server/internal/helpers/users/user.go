@@ -35,7 +35,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) (api.User, error) {
 
     return tools.LoadDB(func(db *sql.DB) (api.User, error) {
         var user api.User
-        getUserQuery := `SELECT user_id, name, family_name, email, discord_username, hacker_id, is_admin, is_volunteer, is_mentor, is_sponsor FROM user WHERE user_id = ?`
+        getUserQuery := `SELECT user_id, name, family_name, email, discord_id, hacker_id, is_admin, is_volunteer, is_mentor, is_sponsor FROM user WHERE user_id = ?`
 
         row := db.QueryRow(getUserQuery, userId)
 
@@ -44,7 +44,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) (api.User, error) {
             &user.Name,
             &user.FamilyName,
             &user.Email,
-            &user.DiscordUsername,
+            &user.DiscordId,
             &user.HackerId,
             &user.IsAdmin,
             &user.IsVolunteer,

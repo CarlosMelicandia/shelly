@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	oauth "github.com/weareinit/Opal/internal/auth"
+	"github.com/weareinit/Opal/internal/auth/utils"
 	"github.com/weareinit/Opal/internal/config"
 )
 
@@ -127,18 +127,18 @@ func RefreshTokens(w http.ResponseWriter, r *http.Request) (string, error) {
 			return "", fmt.Errorf("invalid refresh token claims")
 		}
 
-		newAccessToken, err := oauth.GenerateJWT(userId)
+		newAccessToken, err := utils.GenerateJWT(userId)
 		if err != nil {
 			return "", fmt.Errorf("failed to generate new access token: %w", err)
 		}
 
-		newRefreshToken, err := oauth.GenerateRefreshToken(userId)
+		newRefreshToken, err := utils.GenerateRefreshToken(userId)
 		if err != nil {
 			return "", fmt.Errorf("failed to generate new refresh token: %w", err)
 		}
 
-		oauth.SetCookie(w, "access_token", newAccessToken, time.Now().Add(15*time.Minute))
-		oauth.SetCookie(w, "refresh_token", newRefreshToken, time.Now().AddDate(0, 3, 0))
+		utils.SetCookie(w, "access_token", newAccessToken, time.Now().Add(15*time.Minute))
+		utils.SetCookie(w, "refresh_token", newRefreshToken, time.Now().AddDate(0, 3, 0))
 
 		return newAccessToken, nil
 	}
