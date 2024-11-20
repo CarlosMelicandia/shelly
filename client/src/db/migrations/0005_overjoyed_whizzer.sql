@@ -1,0 +1,1 @@
+ALTER TABLE `user` RENAME COLUMN "discord_username" TO "discord_id";

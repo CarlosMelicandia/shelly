@@ -46,7 +46,7 @@ export const user = sqliteTable('user', {
   // google accounts can have null family (surnames)
   familyName: text('family_name').default(""),
   email: text('email').unique().notNull(),
-  discordUsername: text('discord_username').default(""),
+  discordId: text('discord_id').default(""),
   isAdmin: integer('is_admin', { mode: 'boolean' }).default(false),
   isVolunteer: integer('is_volunteer', { mode: 'boolean' }).default(false),
   isSponsor: integer('is_sponsor', { mode: 'boolean' }).default(false),

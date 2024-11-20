@@ -1,7 +1,6 @@
-const Login = () => {
+const GoogleLogin = () => {
 	const handleLogin = () => {
-		// Redirect the user to the Go backend's /login route to start Google OAuth
-		window.location.href = "http://localhost:8000/api/auth/login";
+		window.location.href = "http://localhost:8000/api/auth/login/google";
 	};
 
 	return (
@@ -11,4 +10,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default GoogleLogin;

@@ -1,4 +1,5 @@
 import useCurrentUser from "@hooks/useCurrentUser.js";
+import DiscordLogin from "@components/DiscordLogin";
 
 export default function Dashboard() {
 	const { data: user, isLoading, isError } = useCurrentUser();
@@ -18,7 +19,7 @@ export default function Dashboard() {
       <br />
       {
         isLoading ? <p>loading...</p> : (
-        !!user.DiscordUsername ? <p>you are connected to discord {user.DiscordUsername}</p> : <button>connect to discord (not working)</button>
+        !!user.DiscordId ? <p>you are connected to discord {user.DiscordId}</p> : <DiscordLogin />
         )
       }
 		</div>
