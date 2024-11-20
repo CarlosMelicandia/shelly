@@ -8,12 +8,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/weareinit/Opal/api"
 	"github.com/weareinit/Opal/cmd/operations"
+	"github.com/weareinit/Opal/internal/auth/utils"
 	"github.com/weareinit/Opal/internal/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -84,14 +83,14 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	userInfo, err := getUserInfo(client)
 
 	// Generate JWT after successful authentication
-	jwtToken, err := GenerateJWT(userInfo.Id)
+	jwtToken, err := utils.GenerateJWT(userInfo.Id)
 	if err != nil {
 		log.Println("Error generating JWT:", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
-	refreshToken, err := GenerateRefreshToken(userInfo.Id)
+	refreshToken, err := utils.GenerateRefreshToken(userInfo.Id)
 	if err != nil {
 		log.Println("Error generating secret:", err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
@@ -109,15 +108,15 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-	SetCookie(w, "access_token", jwtToken, time.Now().Add(15*time.Minute))
-	SetCookie(w, "refresh_token", refreshToken, time.Now().AddDate(0, 3, 0))
+	utils.SetCookie(w, "access_token", jwtToken, time.Now().Add(15*time.Minute))
+	utils.SetCookie(w, "refresh_token", refreshToken, time.Now().AddDate(0, 3, 0))
 
-	censoredEmail := maskEmail(userInfo.Email)
+	censoredEmail := utils.MaskEmail(userInfo.Email)
 
 	// Mask email so user can know which account they used to log in originally
-	SetCookie(w, "mask_email", censoredEmail, time.Now().AddDate(0, 6, 0))
+	utils.SetCookie(w, "mask_email", censoredEmail, time.Now().AddDate(0, 6, 0))
 
-	http.Redirect(w, r, "http://localhost:8000/dashboard/", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost:8000/dashboard", http.StatusSeeOther)
 }
 
 func getUserInfo(client *http.Client) (*GoogleUserInfo, error) {
@@ -147,56 +146,3 @@ func printUserInfo(userInfo GoogleUserInfo) {
 	fmt.Println("UserInfo:\n", string(userInfoJson))
 }
 
-// generates a JWT with a 15 min expiration time
-func GenerateJWT(userId string) (string, error) {
-	envConfig := config.LoadEnv()
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp":    time.Now().Add(15 * time.Minute).Unix(),
-		"userId": userId,
-	})
-
-	secret := []byte(envConfig.JWTSecret)
-	return token.SignedString(secret)
-}
-
-// generates a long-living refresh token with a 3 month expiration time.
-func GenerateRefreshToken(userId string) (string, error) {
-	envConfig := config.LoadEnv()
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"exp":    time.Now().AddDate(0, 3, 0).Unix(),
-		"userId": userId,
-	})
-
-	refresh_secret := []byte(envConfig.JWTSecretRefresh)
-	return token.SignedString(refresh_secret)
-}
-
-func maskEmail(email string) string {
-	parts := strings.Split(email, "@")
-	if len(parts) != 2 {
-		return email
-	}
-	localPart := parts[0]
-	domainPart := parts[1]
-
-	// Mask the local part except for the first two and last two characters
-	if len(localPart) > 4 {
-		masked := fmt.Sprintf("%s*****%s", localPart[:2], localPart[len(localPart)-2:])
-		return fmt.Sprintf("%s@%s", masked, domainPart)
-	}
-
-	// If the local part is too short to mask, return it as is
-	return email
-}
-
-func SetCookie(w http.ResponseWriter, name string, value string, expires time.Time) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     name,
-		Value:    value,
-		Expires:  expires,
-		Path:     "/",
-		HttpOnly: true,
-	})
-}
