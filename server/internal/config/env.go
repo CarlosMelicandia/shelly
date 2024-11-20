@@ -9,6 +9,9 @@ import (
 type AppConfig struct {
 	GoogleClientID     string
 	GoogleClientSecret string
+  DiscordClientID    string
+  DiscordClientSecretID    string
+  DiscordRedirectURI    string
 	JWTSecret          string
 	JWTSecretRefresh   string
 	TursoConnectionURL string
@@ -25,6 +28,9 @@ func LoadEnv() AppConfig {
 	config := AppConfig{
 		GoogleClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		GoogleClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+    DiscordClientID:    os.Getenv("DISCORD_CLIENT_ID"),
+    DiscordClientSecretID:    os.Getenv("DISCORD_CLIENT_SECRET"),
+    DiscordRedirectURI:    os.Getenv("DISCORD_REDIRECT_URI"),
 		JWTSecret:          os.Getenv("JWT_SECRET"),
 		JWTSecretRefresh:   os.Getenv("JWT_SECRET_REFRESH"),
 		TursoConnectionURL: os.Getenv("TURSO_CONNECTION_URL"),
@@ -34,6 +40,9 @@ func LoadEnv() AppConfig {
 
 	if config.GoogleClientID == "" || 
      config.GoogleClientSecret == "" || 
+     config.DiscordClientID == "" || 
+     config.DiscordClientSecretID == "" || 
+     config.DiscordRedirectURI == "" || 
      config.JWTSecret == "" || 
      config.JWTSecretRefresh == "" || 
      config.TursoConnectionURL == "" ||
