@@ -9,7 +9,6 @@ import (
 	"github.com/weareinit/Opal/middleware"
 )
 
-
 func Handler(r *chi.Mux) {
 	r.Use(middleware.CORSMiddleware)
   r.Use(removeTrailingSlashMiddleware)
@@ -27,19 +26,17 @@ func Handler(r *chi.Mux) {
 	})
 
 	r.Route("/api/user", func(router chi.Router) {
-		router.Use(middleware.JWTMiddleware)
 		router.Get("/", UserHandler)
 	})
 
 	r.Route("/dashboard", func(router chi.Router) {
-		router.Use(middleware.JWTMiddleware)
 		router.Get("/", DashboardHandler)
 	})
 
-r.Route("/admin", func(router chi.Router) {
-		router.Use(middleware.AdminMiddleware)
+  r.Route("/admin", func(router chi.Router) {
 		router.Get("/", AdminHandler)
-	})}
+	})
+}
 
 // we have this func because there are issues with routes that end with and without slashes
 // for example: /admin/ would show the admin page when the user shouldn't but /admin would work as intended

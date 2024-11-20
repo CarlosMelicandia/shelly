@@ -4,7 +4,7 @@ import DiscordLogin from "@components/DiscordLogin";
 export default function Dashboard() {
 	const { data: user, isLoading, isError } = useCurrentUser();
 
-	if (isError) return <p>Error loading user session</p>;
+	if (isError) return <p>You are not logged in!</p>;
 
 	return (
 		<div class="text-3xl">
@@ -19,7 +19,7 @@ export default function Dashboard() {
       <br />
       {
         isLoading ? <p>loading...</p> : (
-        !!user.DiscordId ? <p>you are connected to discord {user.DiscordId}</p> : <DiscordLogin />
+        !!user.DiscordId ? <p>you are connected to discord {user.DiscordId}. Feel free to connect with another account <DiscordLogin /></p> : <DiscordLogin />
         )
       }
 		</div>

@@ -18,7 +18,7 @@ const (
 )
 
 func GetAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
-	token, err := ValidateAccessToken(w, r)
+	token, err := validateAccessToken(w, r)
 	if err != nil {
 		newAccessToken, err := refreshTokensAndParseAccessToken(w, r)
 		if err != nil {
@@ -69,7 +69,7 @@ func parseToken(tokenString string, tokenType TokenType) (*jwt.Token, error) {
 }
 
 func refreshTokensAndParseAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
-	newAccessToken, err := RefreshTokens(w, r)
+	newAccessToken, err := refreshTokens(w, r)
 	if err != nil {
 		return nil, fmt.Errorf("refresh failed: %w", err)
 	}
@@ -85,7 +85,7 @@ func refreshTokensAndParseAccessToken(w http.ResponseWriter, r *http.Request) (*
 func GetAccessTokenString(w http.ResponseWriter, r *http.Request) (string, error) {
 	cookie, err := r.Cookie("access_token")
 	if err != nil {
-		newToken, refreshErr := RefreshTokens(w, r)
+		newToken, refreshErr := refreshTokens(w, r)
 		if refreshErr != nil {
 			return "", fmt.Errorf("missing token and refresh failed: %w", refreshErr)
 		}
@@ -95,7 +95,7 @@ func GetAccessTokenString(w http.ResponseWriter, r *http.Request) (string, error
 	return cookie.Value, nil
 }
 
-func ValidateAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
+func validateAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) {
 	tokenString, err := GetAccessTokenString(w, r)
 	if err != nil {
 		return nil, fmt.Errorf("could not fetch token: %w", err)
@@ -109,7 +109,7 @@ func ValidateAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, er
 	return token, nil
 }
 
-func RefreshTokens(w http.ResponseWriter, r *http.Request) (string, error) {
+func refreshTokens(w http.ResponseWriter, r *http.Request) (string, error) {
 	refreshCookie, err := r.Cookie("refresh_token")
 	if err != nil {
 		return "", fmt.Errorf("missing access and/or refresh token")
