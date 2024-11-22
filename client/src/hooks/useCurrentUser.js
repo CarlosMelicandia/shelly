@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@store/queryClient";
 
 async function fetchUser() {
-  const response = await fetch("http://localhost:8000/api/user", {
+  const response = await fetch("http://localhost:8000/api/getUser", {
     credentials: "include",
   });
 
