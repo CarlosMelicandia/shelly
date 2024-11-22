@@ -1,25 +1,28 @@
+import useCurrentHacker from "@hooks/useCurrentHacker.js";
 import useCurrentUser from "@hooks/useCurrentUser.js";
-import DiscordLogin from "@components/DiscordLogin";
+import DiscordLogin from "@components/login/DiscordLogin";
 
 export default function Dashboard() {
-	const { data: user, isLoading, isError } = useCurrentUser();
+   const { data: hacker, isLoadingHacker } = useCurrentHacker();
+   const { data: user, isLoadingUser } = useCurrentUser();
 
-	if (isError) return <p>You are not logged in!</p>;
+  if (isLoadingUser || isLoadingHacker) return <p>loading...</p>;
+	if (!user || !hacker) return <p>You do not have a hacker application or aren't logged in!</p>;
 
 	return (
 		<div class="text-3xl">
 			<p class="text-red-500 text-3xl">this is the dashboard page!</p>
-			{isLoading ? <p>loading...</p> : (
+			{isLoadingHacker || isLoadingUser ? <p>loading...</p> : (
 				<h3>
-					Welcome, {user.Name}!
+					Welcome, {hacker?.first_name}!
 				</h3>
 			)}
       <br />
       <br />
       <br />
       {
-        isLoading ? <p>loading...</p> : (
-        !!user.DiscordId ? <p>you are connected to discord {user.DiscordId}. Feel free to connect with another account <DiscordLogin /></p> : <DiscordLogin />
+        isLoadingUser ? <p>loading...</p> : (
+        !!user?.discordId ? <p>you are connected to discord {user?.discordId}. Feel free to connect with another account <DiscordLogin /></p> : <DiscordLogin />
         )
       }
 		</div>
