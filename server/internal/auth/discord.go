@@ -10,7 +10,7 @@ import (
 
 	"github.com/weareinit/Opal/cmd/operations"
 	"github.com/weareinit/Opal/internal/config"
-	"github.com/weareinit/Opal/internal/helpers/users"
+	"github.com/weareinit/Opal/internal/helpers/user"
 	"github.com/weareinit/Opal/internal/tools"
 )
 
@@ -62,7 +62,7 @@ func HandleDiscordCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := users.GetUserId(w, r)
+	userId, err := user.GetUserId(w, r)
 	if err != nil {
 		http.Error(w, "Failed to fetch User ID: "+err.Error(), http.StatusInternalServerError)
 		return

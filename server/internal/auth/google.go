@@ -99,11 +99,12 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
   user := api.User {
     UserId: userInfo.Id,
-    Name: userInfo.GivenName,
+    FirstName: userInfo.GivenName,
+    LastName: userInfo.FamilyName,
     Email: userInfo.Email,
   }
 
-  if _, err := operations.AddUser(user); err != nil {
+  if _, err := operations.CreateUser(user); err != nil {
     fmt.Println("Error creating user:", err)
     return
   }
@@ -116,7 +117,7 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// Mask email so user can know which account they used to log in originally
 	utils.SetCookie(w, "mask_email", censoredEmail, time.Now().AddDate(0, 6, 0))
 
-	http.Redirect(w, r, "http://localhost:8000/dashboard", http.StatusSeeOther)
+	http.Redirect(w, r, "http://localhost:8000/?register_form=true", http.StatusSeeOther)
 }
 
 func getUserInfo(client *http.Client) (*GoogleUserInfo, error) {
