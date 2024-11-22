@@ -1,4 +1,4 @@
-package users
+package user
 
 import (
 	"database/sql"
@@ -7,13 +7,13 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/weareinit/Opal/api"
-	"github.com/weareinit/Opal/internal/helpers/tokens"
+	"github.com/weareinit/Opal/internal/helpers/token"
 	"github.com/weareinit/Opal/internal/tools"
 )
 
 
 func GetUserId(w http.ResponseWriter, r *http.Request) (string, error) {
-	token, err := tokens.GetAccessToken(w, r)
+	token, err := token.GetAccessToken(w, r)
 	if err != nil {
 		return "", fmt.Errorf("could not get the token to retrieve userId: %w", err)
 	}
@@ -35,17 +35,16 @@ func GetUser(w http.ResponseWriter, r *http.Request) (api.User, error) {
 
     return tools.LoadDB(func(db *sql.DB) (api.User, error) {
         var user api.User
-        getUserQuery := `SELECT user_id, name, family_name, email, discord_id, hacker_id, is_admin, is_volunteer, is_mentor, is_sponsor FROM user WHERE user_id = ?`
+        getUserQuery := `SELECT user_id, first_name, last_name, email, discord_id, is_admin, is_volunteer, is_mentor, is_sponsor FROM user WHERE user_id = ?`
 
         row := db.QueryRow(getUserQuery, userId)
 
         err := row.Scan(
             &user.UserId,
-            &user.Name,
-            &user.FamilyName,
+            &user.FirstName,
+            &user.LastName,
             &user.Email,
             &user.DiscordId,
-            &user.HackerId,
             &user.IsAdmin,
             &user.IsVolunteer,
             &user.IsMentor,
@@ -62,16 +61,3 @@ func GetUser(w http.ResponseWriter, r *http.Request) (api.User, error) {
     })
 }
 
-func IsUserAdmin(userId string, w http.ResponseWriter, r *http.Request) bool {
-  getUser, err := GetUser(w, r)
-
-  if err != nil {
-    return false
-  }
-
-  if getUser.IsAdmin {
-    return true
-  } else {
-    return false
-  }
-}
