@@ -6,7 +6,7 @@ const Admin = () => {
   if (isLoading) return <p>loading...</p>
   if (isError) return <p>You are not logged in!</p>
 
-  if (!user.IsAdmin) {
+  if (!user.is_admin) {
     return <p>you are not an admin</p>
   }
 
