@@ -1,0 +1,1 @@
+ALTER TABLE `hacker_applications` ADD `updated_at` integer NOT NULL;
