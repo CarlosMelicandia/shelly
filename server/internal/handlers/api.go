@@ -25,8 +25,16 @@ func Handler(r *chi.Mux) {
 		router.Get("/callback/discord", oauth.HandleDiscordCallback)
 	})
 
-	r.Route("/api/user", func(router chi.Router) {
-		router.Get("/", UserHandler)
+	r.Route("/api/getUser", func(router chi.Router) {
+		router.Get("/", GetUserHandler)
+	})
+
+	r.Route("/api/getHacker", func(router chi.Router) {
+		router.Get("/", GetHackerHandler)
+	})
+
+	r.Route("/api/createHacker", func(router chi.Router) {
+		router.Post("/", CreateHackerHandler)
 	})
 
 	r.Route("/dashboard", func(router chi.Router) {
