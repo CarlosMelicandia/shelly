@@ -24,7 +24,6 @@ const HackerApplicationForm = () => {
       return
     }
     setIsSubmitting(true)
-    console.log("Form Data:", data);
 
     if (data.other_gender) {
       data.gender = data.other_gender
@@ -43,6 +42,8 @@ const HackerApplicationForm = () => {
         },
         body: JSON.stringify(data),
       });
+
+      window.location.replace("http://localhost:8000/dashboard")
     } catch (error) {
       console.error(error)
     }
