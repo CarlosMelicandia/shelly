@@ -11,4 +11,3 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	filePath := filepath.Join(string(config.FilesDir), "/admin/index.html")
 	http.ServeFile(w, r, filePath)
 }
-

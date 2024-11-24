@@ -61,4 +61,3 @@ func refreshTokensAndParseAccessToken(w http.ResponseWriter, r *http.Request) (*
 
 	return token, nil
 }
-

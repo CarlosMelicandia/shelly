@@ -11,7 +11,7 @@ import (
 
 func Handler(r *chi.Mux) {
 	r.Use(middleware.CORSMiddleware)
-  r.Use(removeTrailingSlashMiddleware)
+	r.Use(removeTrailingSlashMiddleware)
 
 	r.Route("/", func(router chi.Router) {
 		config.FileServer(router, "/", config.FilesDir)
@@ -21,7 +21,7 @@ func Handler(r *chi.Mux) {
 		router.Get("/login/google", oauth.HandleGoogleLogin)
 		router.Get("/callback/google", oauth.HandleGoogleCallback)
 
-    router.Get("/login/discord", oauth.HandleDiscordLogin)
+		router.Get("/login/discord", oauth.HandleDiscordLogin)
 		router.Get("/callback/discord", oauth.HandleDiscordCallback)
 	})
 
@@ -41,7 +41,7 @@ func Handler(r *chi.Mux) {
 		router.Get("/", DashboardHandler)
 	})
 
-  r.Route("/admin", func(router chi.Router) {
+	r.Route("/admin", func(router chi.Router) {
 		router.Get("/", AdminHandler)
 	})
 }

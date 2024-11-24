@@ -41,21 +41,21 @@ func CreateHacker(w http.ResponseWriter, r *http.Request, hacker api.Hacker) (an
 			hacker.Major,
 			hacker.GradYear,
 			hacker.LevelOfStudy,
-      hacker.Country,
+			hacker.Country,
 			hacker.Email,
 			hacker.PhoneNumber,
 			hacker.ResumePath,
-      utils.ToNullString(hacker.Github),
-      utils.ToNullString(hacker.Linkedin),
+			utils.ToNullString(hacker.Github),
+			utils.ToNullString(hacker.Linkedin),
 			hacker.IsInternational,
 			hacker.Gender,
 			hacker.Pronouns,
 			hacker.Ethnicity,
-      0, // avatar
+			0, // avatar
 			hacker.AgreedMLHNews,
-      0, // application status: registered
-      time.Now().Unix(),
-      time.Now().Unix(),
+			0, // application status: registered
+			time.Now().Unix(),
+			time.Now().Unix(),
 		)
 
 		if err != nil {

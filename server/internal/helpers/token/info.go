@@ -28,7 +28,6 @@ func GetAccessToken(w http.ResponseWriter, r *http.Request) (*jwt.Token, error) 
 	return token, nil
 }
 
-
 func GetAccessTokenString(w http.ResponseWriter, r *http.Request) (string, error) {
 	cookie, err := r.Cookie("access_token")
 	if err != nil {

@@ -15,8 +15,8 @@ import (
 )
 
 type DiscordUser struct {
-	ID           string `json:"id"`
-	Username     string `json:"username"`
+	ID            string `json:"id"`
+	Username      string `json:"username"`
 	Discriminator string `json:"discriminator"`
 }
 
@@ -28,18 +28,18 @@ type GuildMember struct {
 }
 
 const (
-	discordAuthorizeURL = "https://discord.com/api/oauth2/authorize"
-	discordTokenURL     = "https://discord.com/api/oauth2/token"
-	discordUserURL      = "https://discord.com/api/users/@me"
+	discordAuthorizeURL        = "https://discord.com/api/oauth2/authorize"
+	discordTokenURL            = "https://discord.com/api/oauth2/token"
+	discordUserURL             = "https://discord.com/api/users/@me"
 	discordGuildMemberEndpoint = "https://discord.com/api/v10/guilds/%s/members/%s"
 )
 
 const INIT_DISCORD = "245393533391863808"
-const INIT_EBOARD_ROLE = "399558426511802368";
+const INIT_EBOARD_ROLE = "399558426511802368"
 
 func HandleDiscordLogin(w http.ResponseWriter, r *http.Request) {
 	envConfig := config.LoadEnv()
-url := fmt.Sprintf("%s?client_id=%s&redirect_uri=%s&response_type=code&scope=identify guilds.join guilds.members.read", discordAuthorizeURL, envConfig.DiscordClientID, envConfig.DiscordRedirectURI)
+	url := fmt.Sprintf("%s?client_id=%s&redirect_uri=%s&response_type=code&scope=identify guilds.join guilds.members.read", discordAuthorizeURL, envConfig.DiscordClientID, envConfig.DiscordRedirectURI)
 	http.Redirect(w, r, url, http.StatusFound)
 }
 
@@ -282,5 +282,3 @@ func checkAndRevokeAdminRole(discordToken string, INITServer string, EBoardRole 
 
 	return "User still has the required role, no action taken", nil
 }
-
-

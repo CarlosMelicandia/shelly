@@ -23,4 +23,3 @@ func ConvertToIntField(rawBody *map[string]interface{}, fieldName string) error 
 	}
 	return nil
 }
-

@@ -97,17 +97,17 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  user := api.User {
-    UserId: userInfo.Id,
-    FirstName: userInfo.GivenName,
-    LastName: userInfo.FamilyName,
-    Email: userInfo.Email,
-  }
+	user := api.User{
+		UserId:    userInfo.Id,
+		FirstName: userInfo.GivenName,
+		LastName:  userInfo.FamilyName,
+		Email:     userInfo.Email,
+	}
 
-  if _, err := operations.CreateUser(user); err != nil {
-    fmt.Println("Error creating user:", err)
-    return
-  }
+	if _, err := operations.CreateUser(user); err != nil {
+		fmt.Println("Error creating user:", err)
+		return
+	}
 
 	utils.SetCookie(w, "access_token", jwtToken, time.Now().Add(15*time.Minute))
 	utils.SetCookie(w, "refresh_token", refreshToken, time.Now().AddDate(0, 3, 0))
@@ -146,4 +146,3 @@ func printUserInfo(userInfo GoogleUserInfo) {
 	}
 	fmt.Println("UserInfo:\n", string(userInfoJson))
 }
-

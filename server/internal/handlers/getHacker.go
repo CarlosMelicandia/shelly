@@ -8,13 +8,12 @@ import (
 )
 
 func GetHackerHandler(w http.ResponseWriter, r *http.Request) {
-  hacker, err := hacker.GetHacker(w, r)
+	hacker, err := hacker.GetHacker(w, r)
 
-  if err != nil {
-    http.Error(w, "Could not fetch the hackers information", http.StatusNotFound)
-  }
+	if err != nil {
+		http.Error(w, "Could not fetch the hackers information", http.StatusNotFound)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(hacker)
 }
-
