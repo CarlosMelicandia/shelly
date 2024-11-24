@@ -19,9 +19,8 @@ function CheckboxField({ form, label, name, isRequired = false }) {
       <label className="inline-flex items-center">
         <input
           type="checkbox"
-          className={`form-checkbox h-5 w-5 text-blue-600 ${
-            errors[name] ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`form-checkbox h-5 w-5 text-blue-600 ${errors[name] ? "border-red-500" : "border-gray-300"
+            }`}
           {...register(name, {
             required: isRequired ? `${label} is required` : false,
           })}

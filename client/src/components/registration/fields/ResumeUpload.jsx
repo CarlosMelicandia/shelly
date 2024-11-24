@@ -25,9 +25,8 @@ export default function ResumeUpload({ form }) {
         id={_name}
         type="file"
         accept=".pdf,.docx"
-        className={`w-full px-3 py-2 border rounded ${
-          errors[_name] ? "border-red-500" : "border-gray-300"
-        }`}
+        className={`w-full px-3 py-2 border rounded ${errors[_name] ? "border-red-500" : "border-gray-300"
+          }`}
         {...register(_name, {
           required: `${_label} is required`,
           validate: {

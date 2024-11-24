@@ -1,7 +1,7 @@
 import useCurrentUser from "@hooks/useCurrentUser.js";
 
 const Admin = () => {
-	const { data: user, isLoading, isError } = useCurrentUser();
+  const { data: user, isLoading, isError } = useCurrentUser();
 
   if (isLoading) return <p>loading...</p>
   if (isError) return <p>You are not logged in!</p>

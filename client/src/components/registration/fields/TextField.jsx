@@ -48,9 +48,8 @@ export default function TextField({
         <>
           <select
             id={name}
-            className={`w-full px-3 py-2 border rounded ${
-              errors[name] ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full px-3 py-2 border rounded ${errors[name] ? "border-red-500" : "border-gray-300"
+              }`}
             {...register(name, {
               required: isRequired ? `${label} is required` : false,
               ...validationRules,
@@ -75,9 +74,8 @@ export default function TextField({
               <input
                 id={`other_${name}`}
                 type="text"
-                className={`w-full px-3 py-2 border rounded ${
-                  errors[`other_${name}`] ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-3 py-2 border rounded ${errors[`other_${name}`] ? "border-red-500" : "border-gray-300"
+                  }`}
                 {...register(`other_${name}`, {
                   required: isOtherSelected ? "Please specify the other." : false,
                 })}
@@ -94,9 +92,8 @@ export default function TextField({
         <input
           id={name}
           type={type}
-          className={`w-full px-3 py-2 border rounded ${
-            errors[name] ? "border-red-500" : "border-gray-300"
-          }`}
+          className={`w-full px-3 py-2 border rounded ${errors[name] ? "border-red-500" : "border-gray-300"
+            }`}
           {...register(name, {
             required: isRequired ? `${label} is required` : false,
             ...validationRules,
