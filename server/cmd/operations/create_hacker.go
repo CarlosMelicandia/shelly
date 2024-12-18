@@ -9,7 +9,6 @@ import (
 	"github.com/weareinit/Opal/api"
 	"github.com/weareinit/Opal/internal/helpers/user"
 	"github.com/weareinit/Opal/internal/tools"
-	"github.com/weareinit/Opal/internal/utils"
 )
 
 func CreateHacker(w http.ResponseWriter, r *http.Request, hacker api.Hacker) (any, error) {
@@ -45,8 +44,8 @@ func CreateHacker(w http.ResponseWriter, r *http.Request, hacker api.Hacker) (an
 			hacker.Email,
 			hacker.PhoneNumber,
 			hacker.ResumePath,
-			utils.ToNullString(hacker.Github),
-			utils.ToNullString(hacker.Linkedin),
+			hacker.Github,
+			hacker.Linkedin,
 			hacker.IsInternational,
 			hacker.Gender,
 			hacker.Pronouns,
