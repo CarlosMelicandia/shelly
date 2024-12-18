@@ -13,7 +13,7 @@ import (
 func GetHacker(w http.ResponseWriter, r *http.Request) (api.Hacker, error) {
 	userId, err := user.GetUserId(w, r)
 	if err != nil {
-		return api.Hacker{}, fmt.Errorf("could not get the token from user")
+		return api.Hacker{}, fmt.Errorf("could not get the token from hacker")
 	}
 
 	return tools.LoadDB(func(db *sql.DB) (api.Hacker, error) {
@@ -50,9 +50,9 @@ func GetHacker(w http.ResponseWriter, r *http.Request) (api.Hacker, error) {
 
 		if err != nil {
 			if err == sql.ErrNoRows {
-				return api.Hacker{}, fmt.Errorf("no user found with the given ID")
+				return api.Hacker{}, fmt.Errorf("no hacker found with the given ID")
 			}
-			return api.Hacker{}, fmt.Errorf("failed to retrieve the user: %v", err)
+			return api.Hacker{}, fmt.Errorf("failed to retrieve the hacker: %v", err)
 		}
 
 		return hacker, nil
