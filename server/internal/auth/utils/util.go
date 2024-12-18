@@ -1,3 +1,5 @@
+// Pretty straight-forward: anything authentication-related util functions should be saved here.
+
 package utils
 
 import (
@@ -10,7 +12,8 @@ import (
 	"github.com/weareinit/Opal/internal/config"
 )
 
-// generates a JWT with a 15 min expiration time
+// Generates a JWT with a 15 min expiration time. This is good practice to have a short living access token.
+// Access tokens and JWT's are words that can be used interchangeably.
 func GenerateJWT(userId string) (string, error) {
 	envConfig := config.LoadEnv()
 
@@ -23,7 +26,8 @@ func GenerateJWT(userId string) (string, error) {
 	return token.SignedString(secret)
 }
 
-// generates a long-living refresh token with a 3 month expiration time.
+// Generates a long-living refresh token with a 3 month expiration time.
+// We will use this refresh token to create a new access token (both of which are cookies that are sent to the client)
 func GenerateRefreshToken(userId string) (string, error) {
 	envConfig := config.LoadEnv()
 
@@ -36,6 +40,7 @@ func GenerateRefreshToken(userId string) (string, error) {
 	return token.SignedString(refresh_secret)
 }
 
+// This function is used solely to help users who have been logged out to have an indication of what email they used to log in.
 func MaskEmail(email string) string {
 	parts := strings.Split(email, "@")
 	if len(parts) != 2 {
@@ -54,6 +59,7 @@ func MaskEmail(email string) string {
 	return email
 }
 
+// Nice helper method used create a cookie on the client
 func SetCookie(w http.ResponseWriter, name string, value string, expires time.Time) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     name,

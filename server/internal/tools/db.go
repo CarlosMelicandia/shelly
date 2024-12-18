@@ -1,3 +1,7 @@
+// You most probably do not want to ever touch this file.
+// The loadDB function is a great helper function to open a DB connection, run whatever SQL query that you need, and it close.
+// The great thing about this function is that it will automatically open up and close once your query runs.
+
 package tools
 
 import (

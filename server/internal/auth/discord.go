@@ -1,3 +1,11 @@
+// This file is primarily completed. There are some minor additions that can be made like adding and checking for certain
+// permissions depending on what roles the user has.
+
+// For example, as of writing this (12/15/24), we are checking if the user who is logging in has they
+// EBoard discord role. If so, we allow that user to have permissions to go to the /admin route. We can add
+// more checks like seeing if a user has a mentor, volunteer, or sponsor role. Other than that,
+// unless you know what you are doing, you probably want to leave this file alone.
+
 package oauth
 
 import (

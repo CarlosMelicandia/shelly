@@ -1,3 +1,6 @@
+// Unless you know what you are doing, there should be no reason to touch this file.
+// We extract the needed information in the GoogleUserInfo struct.
+
 package oauth
 
 import (

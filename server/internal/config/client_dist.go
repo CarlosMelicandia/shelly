@@ -1,3 +1,6 @@
+// DO NOT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING. We are using this filepath
+// to serve the client distribution folder that was generated upon running `npm run build`
+
 package config
 
 import (

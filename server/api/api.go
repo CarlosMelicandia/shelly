@@ -1,3 +1,8 @@
+// These structs are passed to the client and used on the server. Think of this file like a GraphQL schema.
+// We have control over how the json will look like on the client and have autocompletion on the server.
+// Add more attributes as you wish but make sure everything works and you might need to use the turso studio to
+// make sure everything is correctly updated.
+
 package api
 
 // Anything that has a * next to the type means that the field can potentially be null

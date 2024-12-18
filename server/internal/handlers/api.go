@@ -1,3 +1,12 @@
+// This is how we can fetch specific information depending on the route that we are in.
+
+// For example, if we create a new page on the client (called /fakeRoute), we would need
+// to build the client app first using `npm run build` and then create a handler function
+// to serve it.
+
+// Create a new page on the client -> Build the client -> Create a route in this file -> Create a handler function to serve the dist file.
+// As of writing this (12/15/2024), you can reference how to do this by looking at how the admin or dashboard route was done and its handler function.
+
 package handlers
 
 import (
@@ -8,6 +17,7 @@ import (
 )
 
 func Handler(r *chi.Mux) {
+	// Before every route, we will run these middlewares.
 	r.Use(middleware.CORSMiddleware)
 	r.Use(middleware.RemoveTrailingSlashMiddleware)
 
@@ -15,6 +25,7 @@ func Handler(r *chi.Mux) {
 		config.FileServer(router, "/", config.FilesDir)
 	})
 
+	// You probably don't need to touch this route
 	r.Route("/api/auth", func(router chi.Router) {
 		router.Get("/login/google", oauth.HandleGoogleLogin)
 		router.Get("/callback/google", oauth.HandleGoogleCallback)
@@ -23,6 +34,8 @@ func Handler(r *chi.Mux) {
 		router.Get("/callback/discord", oauth.HandleDiscordCallback)
 	})
 
+	// The convention for these routes is to add a handler function. This makes
+	// it cleaner and you know exactly what each route does pretty quickly.
 	r.Route("/api/getUser", func(router chi.Router) {
 		router.Get("/", GetUserHandler)
 	})

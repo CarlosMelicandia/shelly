@@ -1,3 +1,7 @@
+// We want to have privileges be handled in one place which is here. This will be a file that you would add other privileges
+// like IsUserMentor or IsUserSponsor. Following the IsUserAdmin function can give you a good idea on how to write the other
+// functions.
+
 package user
 
 import "net/http"
