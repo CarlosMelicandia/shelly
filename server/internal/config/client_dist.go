@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi"
 )
@@ -14,13 +15,30 @@ var (
 	FilesDir = http.Dir(filepath.Join(WorkDir, "../../../client/dist"))
 )
 
-// FileServer serves static files from a given directory
+// FileServer serves static files from a given directory.
+// The root path ("/") can end with a slash, but non-root paths will redirect to remove the trailing slash.
 func FileServer(r chi.Router, path string, root http.FileSystem) {
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
-		path += "/"
+	if path == "/" {
+		// Serve files from the root directory
+		fs := http.FileServer(root)
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			fs.ServeHTTP(w, r)
+		})
+		r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+			fs.ServeHTTP(w, r)
+		})
+		return
 	}
+
+	// Handle non-root paths
 	fs := http.StripPrefix(path, http.FileServer(root))
+
+	// Redirect requests with trailing slash to the path without it
+	r.Get(path+"/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, strings.TrimSuffix(r.URL.Path, "/"), http.StatusMovedPermanently)
+	})
+
+	// Serve static files for requests without a trailing slash
 	r.Get(path+"*", func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeHTTP(w, r)
 	})
