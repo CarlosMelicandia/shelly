@@ -5,7 +5,7 @@ export default function Landing() {
         <h1 className="text-5xl font-bold neon-text">Welcome to Shellhacks</h1>
         <p className="mt-4 text-lg">Experience the cyberpunk revolution. The future is now.</p>
         <button className="mt-6 px-6 py-3 text-lg font-semibold bg-neon-pink text-black rounded-md shadow-neon-pink transition-transform transform hover:scale-110">
-          Registe
+          Register
         </button>
       </div>
       
